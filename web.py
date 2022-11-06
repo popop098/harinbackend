@@ -3,6 +3,7 @@ from quart import Quart,request,jsonify
 from quart_cors import cors, route_cors
 from dotenv import load_dotenv
 import aiohttp
+import traceback
 load_dotenv(verbose=True)
 app = Quart(__name__)
 Cors = cors(app)
@@ -32,3 +33,13 @@ async def dashboard_data():
                     else:
                         user_guild.append({'name':i['name'],'id':i['id'],'icon':convert_iconurl(i['id'],i['icon']),'join':False})
             return jsonify({"data":user_guild})
+@app.route("/dashboard/guild")
+@route_cors()
+async def guild_dashboard_index():
+    guildid = request.args.get("id")
+    guild_data = mybot.get_guild(int(guildid))
+    return jsonify({"name":guild_data.name,
+                    "icon":str(guild_data.icon) if guild_data.icon else convert_iconurl(guildid,guild_data.icon),
+                    "members":len(guild_data.members),
+                    "roles":len(guild_data.roles),
+                    "channels":len(guild_data.channels)})

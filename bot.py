@@ -6,6 +6,7 @@ class Bot(commands.Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.remove_command("help")
+        self.load_extension("jishaku")
         # AutoCogs(self)
 
     async def on_ready(self):
@@ -19,6 +20,5 @@ class Bot(commands.Bot):
         await self.process_commands(message)
 
 
-intents = discord.Intents.default()
-intents.members = True
-mybot = Bot(command_prefix=commands.when_mentioned, intents=intents)
+intents = discord.Intents.all()
+mybot = Bot(command_prefix=commands.when_mentioned_or("!"), intents=intents)
